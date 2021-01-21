@@ -1,0 +1,478 @@
+---
+title: "GEOG456_T1"
+author: "Javier Arce"
+date: "1/09/2021"
+output:
+  html_document: 
+    toc: true
+    number_sections: true
+  md_document:
+    variant: markdown_github
+  pdf_document: default
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction {.tabset .tabset-fade .tabset-pills}
+
+## Introduction to R and Time Plotting
+
+This is a tutorial for learning basic principles of programming with
+R, and for making some figures that show temporal patterns.
+
+You will only need R running on your computer, and a csv provided by
+the professor. The CSV is from a NOAA sensor collecting temperature
+data in Chapel Hill.  I am also using RStudio to facilitate the
+programming with R.
+
+You will learn:
+
+1. How to import data in R. 
+2. R data types. 
+3. How to change text values to date format 
+4. How to edit values and use color palletes 
+5. How to use plotly to make interactive plots. 
+
+## Importing a CSV
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=365)
+
+```{r}
+the_file <- "/Users/javierarce/Downloads/TMAX_chapel_hill.csv" ## identify where the file is located in your computer and change the value accordingly
+## On a mac: find the file in finder and then right-click the file, and then press option. This should show you that you can copy the file as pathname. Then paste the value in place ofu see my original file path.
+## On a PC: find the file using File Explorer. Press the Shift key and then right-click on the file. You should be able to see the Copy Path option. Then paste the value in the code in place of my original file path. BE SURE TO CHECK the direction of the slashes. Notice that the slash is facing forward in my example, and that is the way that R understands it. PCs often put the slashes backward. 
+
+df <- read.csv(the_file) # open a csv
+## when R reads a CSV it usually creates a data.frame which is the name that R gives to tables
+
+## I originally got this data from ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/
+## you can also get the data for a particular station and time at https://www.ncdc.noaa.gov/cdo-web/
+
+head(df) ## we use head() to see the column names and the first 6 rows of the data.frame we opened. We could also use tail() to see the last six rows
+```
+
+Notice that the column names are not very nice. Let's change that. But before we do that let's learn some basic concepts in R. 
+
+We need to learn the concept of **vectors**. You could think of vectors as "a list of values with the same data type." 
+Even though R also has the concept of lists, in class we will be mostly dealing with `vector` and `data.frame` containers when using R. 
+I am going to create a few vectors here.
+
+## Creating vectors
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=1005)
+
+
+```{r}
+myLetters = c("G","E","O") ## a vector with 3 characters
+myNumbers = c(4,5,6) # a vector with 3 numbers 
+```
+
+You should notice the function `c` that is used to create the vectors (`c` means create). You can check the data type and class of each of these vectors by using the method `class`.
+
+```{r}
+class(myLetters)
+class(myNumbers)
+```
+
+Some classes can be changed to other classes using methods such as `as.integer`, `as.numeric`, `as.list`, `as.data.frame` ..... 
+
+```{r}
+# it is easy to change a numeric class to a character 
+as.character(myNumbers)
+# but it is not straightforward to change the character to a number 
+as.numeric(myLetters)
+# you can change vectors to data.frames
+as.data.frame(myLetters)
+## you should see that the vector is now a column. 
+## in fact, I think it is a useful thing to think about vectors as columns in a table. 
+## Let's make a data.frame based on the two vector that we have created. 
+## the vector myLetters will have the column name col1 and the numbers123 vector will have the name col2
+test = data.frame(col1 = myLetters, col2 = myNumbers )
+test
+```
+
+## Indexing 
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=1500)
+
+In any language there will be ways to assign a number to each element within a vector, table, data.frame, array, list, raster, object, etc. In R, Python and JS this is called **indexing**. Hence indexing is an important concept for you to remember. 
+
+In R, vectors have only one dimension. If we want to select the first element in the vector `myLetters`, we would write `myLetters[1]`. The fact that the first element has index [1] is one of the major differences with other programming languages. As we will see, for Python and for JS the first element will be [0].
+
+In the case of data frames, we have 2 dimensions, the rows and the columns. To get an element in a data frame we write the number of the row, then a comma and then the column. For example, to get the second row and first column of our test data frame we write `test[2,1]`. We can also select entire rows or columns of a data.frame.
+
+```{r}
+myLetters[1]## selecting one element in a vector
+test[2,1] ## selecting the cell in the second row and first column
+test[2,] ## selecting the second row of the data.frame test. 
+test[,2] ## selecting the second column of the data frame test, you could also use test[2] but I prefer to use the comma to remind me that I am dealing with columns 
+test$col2 ## selecting the first column by using the name of the column after a dollar sign ($) 
+
+```
+## Deleting columns and changing columns names
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=1845)
+
+Above, we saw that our data.frame had some weird column names and some columns with useless data. Let's start getting rid of those columns. Let's look at the first six rows of the data frame:
+
+```{r}
+head(df)
+```
+I would like to keep the third column that has the date (X20180101) and the fifth column that has the temperature (X0). I could either delete the columns that I do not want, or make a new data frame with the columns I am interested in. I will show you both ways. 
+
+```{r}
+## making a new df with the columns that I want.
+df1 = data.frame(date = df$X20180101, TMAX = df$X0)
+## another alternative
+df2 = df[,c(3,5)] # selecting column 3 and 5 and saving it as df2
+names(df2) = c("date","TMAX") ## naming the columns
+
+df3 = df ## making a copy just in case I get it wrong 
+df3[,c(1,2,4,6:9)] = NULL ## deleting columns 1,2,4 6 to 9. Hence keeping 3 and 5
+names(df3) = c("date","TMAX") ## naming the columns
+```
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=2175)
+
+```{r}
+df3 <- df3[order(df3$date),] ## I am making sure that the data.frame is sorted by date
+##I am using a function named order. This function sorts the data, however I want to order all the rows in df3 based on the order of the column date.  
+```
+## Library installation 
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=2389)
+
+Now let's make a simple bar graph to see how the maximum temperature changed. For that we will install two libraries (`plotly` and `colorbrewer`).
+
+```{r}
+#install.packages("plotly") ## take out the hash-symbol at the beginning of this line if you want to run this line in R. Hashes are used for making comments. 
+#install.packages("RColorBrewer")
+
+## Your software may prompt you to select a CRAN Mirror location. CRAN is the ftp repository where we can obtain R libraries and R software versions. 
+
+## Libraries are files that contain functions for different purposes. The libraries also contain help files and other libraries. In the case of Python, the "equivalent" of CRAN is pip or conda, and for JS the "equivalent" would be npm. For Python and R you usually install the libraries in your computer and call them at the begining of your code by typing in R library(theNameOfTheLibrary) and in Python "import  theNameOfTheLibrary". When calling a JS script inside an HTML file we will call the library by using a script tag and putting the source address such as <script src="/folder/theLibrary.js"></script> or calling the script from a https address or a CDN (Content Delivery Network) such as  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js""></script>
+```
+
+# Plots {.tabset .tabset-fade .tabset-pills}
+## Intro to plotly plots
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=35143e64-f3de-4a33-b112-acb301306234&start=100)
+
+```{r}
+#After installing the packages you need to open the libraries.
+
+library(plotly)
+library(RColorBrewer)
+
+## now let's make our bar plot using Plotly. 
+## If you go to google and type Plotly Bar Chart R you will get this page https://plotly.com/r/bar-charts/
+## Here you have a simple example of how to make a bar chart. 
+
+
+fig <- plot_ly(x = df3$date, y = df3$TMAX, name = "TMAX Chapel Hill 2018",type = "bar")
+fig
+
+
+### During the past two years I used the ggplot2 library.  This year I have decided that the plotly library is better for learning since it can be used in both python and JS. Also, it allows for easy interactivity which is an important part of data analysis when dealing with time and space.  If you are interested in making the figures with ggplot, here is the code:
+#p <- ggplot(df, aes(x=date, y=TMAX)) + geom_bar(stat="identity") ## this asks ggplot to make a plot using data from df with the values on the x axis from date and the values on the y axis from TMAX. 
+# the + geom_bar(stat = "identity") adds the instruction to make it a bar graph where the heights of the bars represent the y-values
+#p ## will print the plot
+```
+
+Congratulations, you have made your first bar plot! If you do not see a plot like the one above, check that you have the `plotly` libraries installed and that you have opened the csv as a data.frame.
+
+Notice two things. 
+
+1. the vertical axis goes from 0 to almost 400. This is because the temperature values are recorded as decimal centigrade. So you should divide the values by 10 if you want a more normal representation of the temperature values. But for now we will use the numbers as they come from NOAA. 
+2. Notice that the bar plots are clustered. This is because we gave R the value dates, hence  Jan 31 2018 (20180131) will appear as if it is 70 units away from February 01 2018 (20180201). So, something we should have done from the beginning was check the data types, and change the values in the date column to date type. 
+
+## Changing a text to a date
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=35143e64-f3de-4a33-b112-acb301306234&start=345")
+
+```{r}
+df3$day <- as.Date(as.character(df3$date), "%Y%m%d") ## this will create a new column named day by interpreting the values in column date as Year month day. 
+## now let's make the plot again with the value day in the x axis
+fig <- plot_ly(df3, x = ~day, y = ~TMAX, name = "TMAX Chapel Hill 2018",type = "bar") ## notice also that this time I gave  df3 as the first argument, then assigned the x value by putting  ~day instead of having to write df3$day
+fig
+```
+
+Notice that there are some gaps in the data. You could have also noticed that some data was missing by looking at the number of rows in the data and noticing that there are only 322 counts and not 365 counts. 
+
+```{r}
+nrow(df3)
+tt = df3[!is.na(df3$TMAX),]
+nrow(tt)
+```
+
+Today I am going to overlook the missing 43 counts as they seem to be missing throughout many months. Missing data is going to be a common problem, and there are different ways to address it, but that is not the purpose of this tutorial. 
+
+## Assigning color to a few bars
+
+[ Link to Video ](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=35143e64-f3de-4a33-b112-acb301306234&start=955)
+
+Let's get back to making plots and giving these plots some color. 
+Most plotting methods have ways to assign color values. However `plotly` is not very good at assigning colors, and also I would like you to understand the basics of assigning colors so you can apply it to different software, graphs and maps. 
+
+In R I find the library classInt very useful to classify data and assign color. I am going to start with a simple example and then go back to our temperature example. 
+
+```{r}
+myLetters = letters[1:5] # making a vector of letters that go from a to e
+myNumbers = c( 1,1,1,5 ,3) ## making a vector with numbers 
+myNumbers = c(rep(1,3),5,3) ## the same as before but just showing you how to use rep to repeat numbers
+myColorPalette = brewer.pal(9,"RdYlBu") ## I selected the 9 colors from the spectral combination from color brewer. You can check the other possible color combinations by checking display.brewer.all()
+
+myColors = colorRampPalette(myColorPalette) ## I am creating a function that will interpolate colors within the palette that I give it. 
+
+myColors(5) ## you should see that myColors is a vector containing the name of colors in hexcode. ## The number is the number of colors that it will generate with palette that you selected. 
+## Change the number from 5 to other numbers to see how many colors it creates. 
+## You can put whatever value you wish, but if the number is too high you will see some colors repeated, since there is a limit on how many different colors can be generated. 
+```
+
+
+```{r}
+## Let's use five colors since we have 5 bars. 
+plot_ly(x = myLetters, y = myNumbers, marker = list(color=myColors(5)), name = "5 Bar test",type = "bar")
+```
+***
+
+You should see a bar plot with each letter having a bar with a different color in the spectral range. Let's say we want to assign a color to a value, so for example a,b and c have the same color and that d,e have another color. We can do this in many ways, and most plotting functions already have ways to do the color interpolation.  However, since I plan to  export this data.frame to JS to make the figure on the web, I would rather generate a column that contains the color that will be assigned to each value. (Also, certain plotting software (including `plotly`) has some weird issues with how to assign colors to markers.) 
+
+Let's say you want to use color to represent a value, hence in our previous plot, all the letters with the value 1 should be red (a,b,c). The bar that has the value 3 should have a yellow color (bar-e) and the bar that has a value of 5 (bar-d) should have a blue color. 
+
+We could take advantage of indexing in R to do this. 
+
+```{r}
+mC = myColors(5) ## creating a 5 color vector
+mC[1] ## this should show us the first color in our vector (red) #D73027"
+mC[3] ## this should show us the third color in our vector(light yellow) #FFFFBF
+mC[5] ## this should show us the fifth color in our vector (blue) "#4575B4"
+mC[myNumbers] ## if you use myNumbers as the index you should see that the colors that you get are assigned to the values. 
+```
+
+```{r}
+## Now let's apply what we have learned to the temperature plot. Notice that I used the same code as before but added myNumbers as an index of myColors(5)
+plot_ly(x = myLetters, y = myNumbers, marker = list(color=myColors(5)[myNumbers]), name = "5 Bar test",type = "bar")
+```
+
+## Assigning color to the temperature plot
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659)
+
+
+In the previous example, assingning the value to the index of the color was relatively straightforward since the values were positive and integers. However in our example of temperatures we have negative values. So we need to make all the values positive by adding the minimum value. Also let's assign a color to each possible integer from the min value to the maximum. 
+```{r}
+myScale = min(df3$TMAX)-1 ## min value of TMAX, minus 1 since in R the index starts at 1.
+print(myScale) ## this will be the value that will be added sothat all values are between 1 and max + myScale
+print(max(df3$TMAX))## max value of TMAX
+daRange = max(df3$TMAX)-(min(df3$TMAX)-1)
+print(daRange) ## range value of TMAX. I will use this to define how many colors to use 
+df3$daColor = myColors(daRange)[df3$TMAX-myScale] ## I am creating a column with the assigned color using the indexing method
+```
+
+```{r}
+##Using the previous temperature graph that we used before, let's do the following:
+plot_ly(df3, x = ~day, y = ~TMAX, marker = list(color=df3$daColor), name = "TMAX Chapel Hill 2018",type = "bar") 
+```
+
+Oh no! the red colors are representing cold temperatures, and the blues represent hot. We need to do something about this. 
+
+## Reversing the vector
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659&start=89" target="_blank" rel="noopener noreferrer)
+
+R, Python and JS have methods to reverse the order of the vector. In R the method is `rev()`, in Python `[::-1]` , and in JS the method is `.reverse()`. 
+
+I am going to first reverse the colorPalette 
+
+```{r}
+myColorPalette = rev(brewer.pal(9,"RdYlBu")) 
+myColors = colorRampPalette(myColorPalette)
+df3$daColor = myColors(daRange)[df3$TMAX-myScale]
+
+plot_ly(df3, x = ~day, y = ~TMAX, marker = list(color=df3$daColor), name = "TMAX Chapel Hill 2018",type = "bar") 
+
+```
+
+Now this looks much better.
+
+## Warming stripes
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659&start=442 target="_blank" rel="noopener noreferrer)
+
+The previous figure reminded me of [warming stripes by Ed Hawkins](http://blogs.reading.ac.uk/climate-lab-book/files/2018/12/wmo_stripes.png)
+
+In *warming stripes*, Hawkins compares temperature for multiple years at a location, and only uses relative color to show the patterns of temperature change. To mimic this, I will assign the same value of 'y' to all the bars,  keeping the color coding of the bars based on TMAX.
+
+```{r}
+constY = c(rep(1,length(df3$TMAX))) ## creating a vector of 1s that has the length df3$TMAX. Most JS uses .length, and Python len(). 
+plot_ly(df3, x = ~day, y = constY, marker = list(color=df3$daColor), name = "TMAX Chapel Hill 2018",type = "bar")
+```
+
+## Factor data type
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659&start=669)
+
+
+I don't like the missing days. So I am going to make days a **factor**. Factor is an R data type that is used as a category, stored as a level. It is important to remember when working with R data that date types and things that look like numbers or characters could be factors. Not recognizing this that could mess up our analysis. However, in the following case you will see that I will make days behave differently by making them into factors. 
+```{r}
+fig = plot_ly(x = as.factor(df3$day), y = constY, marker = list(color=df3$daColor), name = "TMAX Chapel Hill 2018",type = "bar") 
+fig
+```
+
+## Eliminating the table axis information in Plotly 
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659&start=769)
+
+
+I will also eliminate the labels in the x and y axis. For that I will create a variable named `noAxisList` wich contains all the information that `plotly` expects as a list. 
+
+```{r}
+noAxisList <- list(
+  title = "",
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showgrid = FALSE
+)
+fig = fig %>% layout(title = 'Color Bar',   ### here I am using the pipe operator (%>%) to change the figure which we already made
+         xaxis = noAxisList,
+         yaxis = noAxisList)
+fig
+```
+
+Pretty cool!
+
+## Bar polar graph
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659&start=1180)
+
+
+But let's make this graph even more fun. While we can see that the x axis is time, it does not gives us a sense of a cycle. We could change the image to invoke the metaphor of time from a clock.  (I was also inspired by Andrienko et. al.'s figure on cyclical processes). To give it a cyclical look I will use the polar graph method. Let's start with plotly's basic example. In this page you can find details about all the things that you can change in the plot.  [https://plotly.com/r/reference/barpolar/](https://plotly.com/r/reference/barpolar/)
+
+```{r}
+
+fig <- plot_ly(
+    type = 'barpolar',
+  ) 
+fig <- fig %>%
+  add_trace(
+    r = c(3, 1.5),
+    theta = c(45, 0),
+    width = c(10,10),
+      marker = list(
+        color = c("#00FF00","#FF0000")
+      )
+  )
+fig
+```
+
+## Days to theta 
+
+Notice that a barpolar plot is created by assigning values of radius (distance from the center) and theta (angle). In our case we want to use temperature as radius and the date as the theta, hence we need to convert the day of the month to an angle. We have 360 degrees and 365 days. Hence we can convert the day of the year by dividing the day of the year by 365 and then multiplying that proportion by 360. Let's do that. 
+
+```{r}
+## to get the julian day in R we convert a day to %j 
+## This is needed because, for example our 31st row is Feb 2 since we are missing some data. Hence we can not use the row number to determine the date.  
+print(df3$day[31])
+## we can use this method
+print(format(df3$day[31],"%j")) ## this should give us a value of 33 as character 
+print(as.numeric(format(df3$day[31],"%j")))  ## this should give us a value of 33 as numeric
+df3$theta = (as.numeric(format(df3$day, "%j"))/365)*360 ## I know we have leap years, but I will not take care of that now!
+```
+
+Now our data frame has all the information to create the bar polar graph. 
+
+```{r}
+fig <- plot_ly(
+    type = 'barpolar',
+  ) 
+fig <- fig %>%
+  add_trace(
+    r = df3$TMAX/10, ## divided by 10 so the values are in actual degrees Celsius
+    theta = df3$theta,
+    width = constY,
+      marker = list(
+        color = df3$daColor
+      )
+  )
+fig
+```
+
+```{r}
+fig %>% layout(
+  polar = list(
+    angularaxis = list(
+      tickmode  = 'array',
+      ticktext = c("Winter","Spring","Summer","Fall"), 
+      tickvals = c(0,90,180,270),
+      direction = "clockwise", ## to have the days increase clockwise
+      rotation = -90 # to have the winter on the bottom
+               )
+  )
+)
+```
+
+What patterns can you see now that were not as obvious when seeing the data horizontally?  
+What changes could be made to this visualization to make it more elegant and informative?
+
+## Ridgeplot using ggplot2 and the ggridges library
+
+[Link to Video](https://uncch.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=660aaed7-a37d-458b-b84b-acb400f6a659&start=2281)
+
+Now let's do another version of a plot which has become a very popular way to visualize change in time. The ridgeline plot ( also known as the joyplot... but that is another story) was originally made by a radioastronomer looking at pulsars. The plot shows brightness as a function of time for a periodic process. If you look for [#joyplots](https://twitter.com/hashtag/joyplot) in twitter you will see many examples.  
+
+One of the main beauties of R is that people create libraries with very easy to read documentation. To make a ridgline plot first we download a library and prepare the data. 
+
+```{r}
+## I have not found a decent way of doing this with plotly. I can make the distributions in plotly using violin plots but it would take a lot of hacking to get it to assign the colors by temperature. So we will keep using ggridges
+#install.packages("ggridges")
+
+library(ggridges) # open the ggridges library. It needs ggplot2 and a recent version of R to work
+
+df3$month <- format(df3$day,"%m") ### from the column day create another column named month that has the number of the month
+
+head(df3)
+```
+
+I made the column month because I am going to aggregate the data by month. 
+
+```{r}
+ggplot(df3, aes(x = TMAX, y = month, fill = ..x..)) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  labs(title = 'Temperatures in CH') +
+  scale_fill_gradientn(colours = colorRampPalette(rev(brewer.pal(9,"RdYlBu")))(daRange)) ## Notice that ggplot already has a method to assign colors
+```
+
+What do you see from this graph that you couldn't see using the bar graph or the circular graph? 
+What changes could be made to this visualization to make it more elegant and informative?
+
+
+You can download the R script and date from Sakai:
+[Resources/Data/Chapel Hill](https://sakai.unc.edu/access/content/group/3806dd0b-8fc6-4632-9094-f72e829639fb/Data/Chapel_Hill_Temperature/)
+
+# Summary
+
+In this tutorial you have learned several R concepts, such as 
+
+- *indexing*
+- `vector`
+- `data.frame`
+- `factor`
+
+You have also learned new methods in R.
+
+- `read.csv`
+- `head`
+- `length`
+- `nrow`
+- `colnames`
+- `c`
+- `as.data.frame`
+- `rev`
+
+(See if you can recall what each method does.)
