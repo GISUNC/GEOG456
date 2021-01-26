@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing the iframe idea</title>
+</head>
+<body>
+    <div class="container-fluid main-container">
+        <p>Comienxo</p>
+        <p>nada</p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla qui ut non praesentium sed, sapiente quaerat repellendus quisquam harum beatae quo repudiandae animi in vitae id molestias obcaecati aliquid quasi libero a veniam delectus debitis. Delectus maiores quisquam voluptatum nam debitis perferendis voluptas! Neque fuga nulla amet illo perferendis necessitatibus deserunt aliquam debitis sint veritatis cumque iure tempora quos ut itaque quasi dolorum tenetur, molestias a ex? Provident porro quo veritatis error voluptas eaque voluptates itaque saepe. Quod vel accusamus ex commodi quia fuga a est, rem, deserunt optio blanditiis error explicabo veritatis? Iure porro ut similique maxime, nulla iusto.
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, voluptate laboriosam? Unde repellendus a sunt, facere placeat, quasi animi doloremque minus molestias corporis labore quas. Quis excepturi sequi vel aliquam maiores nesciunt. Repudiandae distinctio quasi ducimus quaerat at. Perferendis quas recusandae, veniam excepturi consequuntur rem ut accusantium corrupti corporis enim iste saepe minus ab quia odio reprehenderit, repellendus sint incidunt omnis error? Ipsam est assumenda ipsa magni voluptate repudiandae, maiores alias, quidem possimus aut perspiciatis laboriosam iste, libero consectetur. Corporis id explicabo ipsa minus unde ex consequuntur, esse a sequi, repudiandae quaerat vero at dolorem hic officiis et delectus aliquid quis quibusdam rerum modi repellat. Tempora aspernatur at blanditiis odit autem, praesentium dolores dicta delectus eligendi molestiae ut ex ipsa quia veritatis sapiente deserunt architecto atque ullam necessitatibus saepe? Minima rerum cumque quisquam eveniet dolorem eligendi sunt ex nemo fugit! Temporibus recusandae aspernatur veritatis exercitationem eaque ut ad natus tempora quas consequatur aut, cumque necessitatibus esse atque voluptate ipsam optio asperiores dolor et libero? Aspernatur, ratione. Neque expedita, autem libero magni voluptatum accusantium corporis pariatur nisi earum, magnam natus nesciunt nemo, aut rem molestiae enim excepturi. Quae ratione suscipit consequatur adipisci, dolorem impedit a optio sit, distinctio similique repudiandae iusto odit provident obcaecati dicta sapiente. Itaque, ut vero quia accusamus sit, quibusdam voluptatibus quisquam omnis dolorum reprehenderit molestiae aspernatur! Perspiciatis accusantium sint ipsa dolorem odit quo reiciendis quas cumque cupiditate esse sed delectus autem dolorum porro, atque quia voluptatibus hic soluta ipsam! Quae, temporibus necessitatibus possimus, numquam reprehenderit a ullam, amet exercitationem autem impedit optio deleniti dolores aperiam quibusdam sit itaque. Sunt quaerat neque asperiores, soluta pariatur est, autem quisquam velit quasi consequatur illo. Veritatis quod at aperiam asperiores cum, corrupti, quis facere voluptatum dolores odit explicabo enim velit. Officia voluptatibus quod rem debitis consequuntur ut suscipit soluta vitae accusantium expedita praesentium deserunt iusto, sequi molestiae perspiciatis sint perferendis enim eius! Rerum facilis soluta obcaecati quo nulla id iusto, quis expedita ex voluptate amet voluptatum fugit nobis voluptatibus explicabo a necessitatibus? Mollitia, obcaecati dolorum laborum aliquam maiores officiis architecto earum omnis recusandae, id deserunt fuga aut assumenda quo reprehenderit cum. Tenetur iste esse blanditiis, sunt hic ipsa dolor corporis possimus repudiandae magnam. Obcaecati magnam soluta totam. Provident iusto eligendi temporibus molestias expedita consequatur natus unde error perspiciatis quos adipisci quia earum ducimus doloremque, obcaecati porro, vitae illo culpa eum vero repudiandae aspernatur ipsa officia ad? Quasi, adipisci explicabo ratione non magnam necessitatibus cumque voluptatem, vitae tempore eligendi aut mollitia. Inventore, et officia nam necessitatibus nemo dignissimos accusantium assumenda, iure provident, quasi itaque quam iusto quo sequi labore. Unde magnam qui porro rem minima, nihil voluptate? Optio in dolor ea tempora natus labore mollitia doloremque deserunt, nulla dolorum vitae id eum veritatis, fuga rem aliquid assumenda ratione architecto laudantium minus repellendus? Sunt omnis voluptatibus incidunt quo cumque ex sequi quia laboriosam quibusdam debitis temporibus consectetur, laudantium ipsum excepturi eligendi, voluptatum necessitatibus numquam nobis ad inventore id dicta earum. Pariatur itaque earum, officia dolorum doloribus quos iusto ex aut laborum nam dignissimos!</p>
+    </div>
+
+<script>
+    var x = document.getElementsByClassName("container-fluid main-container")
+    x[0].style.marginTop = "40%"
+    var elemDiv = document.createElement('div');
+    elemDiv.style.cssText = 'position: fixed;top:0; left:0; bottom: 60%; width:100%;padding:5px;z-index:100;background-color: #cae8ca; border: 2px solid #4CAF50;'
+    document.body.appendChild(elemDiv);
+
+    var elemBut = document.createElement('button');
+    elemBut.innerText = "On / Off"
+    elemBut.setAttribute("onclick", "alert('hola')")
+    elemDiv.appendChild(elemBut);
+
+    // var elemIframe = document.createElement('iframe');
+    // elemIframe.src = "https://uncch.hosted.panopto.com/Panopto/Pages/Embed.aspx?id=84bea18b-d2f0-46b0-954b-acb300f33a46&start=1000"
+    // elemIframe.height = "100%"
+    // elemIframe.width = "100%"
+    // elemDiv.appendChild(elemIframe);
+</script>
+    
+</body>
+</html>
