@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar</title>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
+<body>
+
+    <div id="myDiv"></div>
+    <button onclick="alert('hello')">Click Alert</button>
+    <button onclick="console.log('I was clicked')">Click Console Log</button>
+    <button onclick="myFunction()">My Function</button>
+    <button onclick="myFunction2()">Change Type</button>
+
+    <label for="mySelect">Select a Month</label>
+    <select id="mySelect" onchange="myQue(this.value)">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+
+
+
+    <script src="./data/temp.json"></script>
+    <script>
+        var trace1 = {
+        x: ChapelHill.day,
+        y: ChapelHill.TMAX,
+        mode: 'markers',
+        type: 'bar',
+        marker: {
+            color:ChapelHill.daColor
+        }
+        };
+
+        myQue = function(aMonth) {
+            trace1.x = [];
+            trace1.y = [];
+            trace1.marker.color = [];
+            for (i=0; i<ChapelHill.month.length; i++){
+                if (ChapelHill.month[i] == aMonth){
+                    trace1.x.push(ChapelHill.day[i])
+                    trace1.y.push(ChapelHill.TMAX[i])
+                    trace1.marker.color.push(ChapelHill.daColor[i])
+                }
+            }
+          makePlot()  
+
+        }
+
+        makePlot = function(){
+            data = [trace1];
+            Plotly.newPlot('myDiv', data);
+        }
+
+        var n = 1;
+        myFunction = function(){
+            console.log("clicked " + n + " times" )
+            n = n + 1
+        }
+
+        myFunction2 = function(){
+            console.log(data[0].type + " to ")
+            if (data[0].type == "bar"){data[0].type = 'scatter'}
+            else (data[0].type = 'bar')
+            Plotly.newPlot('myDiv', data);
+            console.log(data[0].type)
+        }
+
+        myQue("01")       
+        
+    </script>
+</body>
+</html>

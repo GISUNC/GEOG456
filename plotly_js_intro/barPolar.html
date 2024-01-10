@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Polar</title>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
+
+<style>
+    #myDiv {
+        position: absolute;
+        width: 50%;
+        height: 100%;
+    }
+
+    #mySecondDiv {
+        position: absolute;
+        left: 50%;
+        width: 50%;
+        height: 100%;
+    }
+</style>
+
+<body>
+
+    <div id="myDiv"></div>
+    <div id="mySecondDiv">
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vero maxime inventore dolores sunt laborum natus
+            hic nesciunt mollitia omnis, dolorem deleniti rerum repudiandae? Nisi, vitae! Obcaecati quo temporibus
+            placeat totam rerum veniam quaerat blanditiis, atque dolores quidem nobis id! Inventore reiciendis officia
+            amet quis sapiente illum ab aliquam perferendis hic?</p>
+    </div>
+
+    <script src="./data/temp.json"></script>
+    <script>
+        var trace1 = {
+            theta: ChapelHill.theta,
+            r: ChapelHill.TMAX,
+            mode: 'markers',
+            type: 'barpolar',
+            marker: {
+                color: ChapelHill.daColor
+            }
+        };
+
+        var layout = {
+            polar: {
+                angularaxis: {
+                    tickmode: "array",
+                    ticktext: ["Winter", "Spring", "Summer", "Fall"],
+                    tickvals: [0, 90, 180, 270],
+                    direction: "clockwise",
+                    rotation: -90
+                }
+            }
+        }
+
+        var data = [trace1];
+
+        Plotly.newPlot('myDiv', data, layout);
+    </script>
+</body>
+
+</html>

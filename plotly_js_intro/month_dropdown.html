@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bar Scatter</title>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
+<body>
+
+    <div id="myDiv"></div>
+   
+    <label for="mySelect">Select a Month  </label>
+    <select id="mySelect"  onchange="myQuery(this.value)" autofocus>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+
+
+
+      </select>
+
+    <script src="./data/temp.json"></script>
+    <script>
+
+// var myDays = [];
+// var myTMAX = [];
+var trace1 = {
+  x: [],
+  y: [],
+  mode: 'markers',
+  type: 'bar',
+  marker: {
+      color:ChapelHill.daColor
+  }
+};
+
+
+myQuery = function(daValue){    
+    trace1.x = [];
+    trace1.y = [];
+    for (i=0; i<ChapelHill.month.length; i++){
+        if (daValue == ChapelHill.month[i])
+            {trace1.x.push(ChapelHill.day[i])
+            trace1.y.push(ChapelHill.TMAX[i])
+            }
+    }
+    makePlot();
+}
+
+
+myQue = function(aMonth){
+            trace1.x = [];
+            trace1.y = [];
+            trace1.marker.color = [];
+
+            for (i = 0; i<ChapelHill.month.length; i++){ // loop starts
+                if(ChapelHill.month[i] == aMonth) {
+                    trace1.x.push(ChapelHill.day[i])
+                    trace1.y.push(ChapelHill.TMAX[i])
+                    trace1.marker.color.push(ChapelHill.daColor[i])
+                }
+            }// loop ends
+
+makePlot = function(){
+var data = [trace1];
+Plotly.newPlot('myDiv', data )
+}
+
+myQuery("01")
+
+</script>
+</body>
+</html>

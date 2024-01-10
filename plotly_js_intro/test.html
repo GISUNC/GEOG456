@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bar Scatter</title>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
+<body>
+
+    <div id="myDiv"></div>
+    <button onclick="alert('hola')">Click Alert</button>
+    <button onclick="console.log('hola')">Click Console</button>
+    <button onclick="myFirstFunction()">Click 1F</button>
+
+    <button onclick="mySecondFunction()">Click 2F</button>
+    <label for="mySelect">Select a Type of Graph</label>
+    <select id="mySelect"  autofocus onchange="miFunc(this)">
+        <option value="bar">Bar</option>
+        <option value="scatter">Scatter</option>
+      </select>
+
+    <script src="./data/temp.json"></script>
+    <script>
+        var trace1 = {
+  x: ChapelHill.day,
+  y: ChapelHill.TMAX,
+  mode: 'markers',
+  type: 'bar',
+  marker: {
+      color:ChapelHill.daColor
+  }
+};
+
+var data = [trace1];
+var n = 1
+myFirstFunction = function(){
+    var x = 1;
+    n = n + 1
+    console.log(x*n)
+}
+// mySecondFunction = function(){
+// Plotly.newPlot('myDiv', data);
+// }
+
+// myBar = function(){
+// data[0].type = "bar";
+// Plotly.newPlot('myDiv', data2 );
+// }
+
+mySecondFunction = function(){
+
+if (data[0].type == "bar") {data[0].type = "scatter"}
+else {data[0].type = "bar"}
+Plotly.newPlot('myDiv', data );
+}
+
+miFunc = function(daSelection){
+    console.log(daSelection.value)
+    data[0].type = daSelection.value
+    Plotly.newPlot('myDiv', data )
+}
+
+Plotly.newPlot('myDiv', data )
+    </script>
+</body>
+</html>

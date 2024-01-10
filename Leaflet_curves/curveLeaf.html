@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+ integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+ crossorigin=""></script>
+    <script src="./js/leaflet.curve.js"></script>
+    <style>
+        #mapid { height: 500px; width: 360px; }
+    </style>
+</head>
+<body>
+    
+    From: <select id="selectNumber">
+        <option>Start Station</option>
+    </select>
+    To:     <select id="selectNumber2">
+        <option>End Station</option>
+    </select>
+
+    <div id="mapid"><h2 id="myH" style="text-align: center; width: 100%; position: absolute; color: aliceblue; z-index: 1000;">from station 0 - to station i</h2></div>
+    <script>
+    var stations = {"station":[3004,3005,3006,3007,3008,3009,3010,3012,3013,3014,3015,3017,3018,3019,3020,3021,3022,3024,3025,3028,3029,3030,3031,3032,3033,3034,3035,3037,3038,3039,3040,3041,3043,3045,3046,3047,3049,3050,3051,3052,3053,3054,3055,3056,3057,3058,3059,3060,3061,3062,3063,3064,3065,3066,3068,3069,3071,3072,3073,3074,3075,3077,3078,3086,3088,3093,3096,3097,3098,3099,3100,3101,3102,3104,3106,3107,3108,3112,3113,3114,3115,3116,3118,3119,3120,3121,3124,3125,3150,3152,3153,3154,3155,3156,3157,3158,3159,3160,3161,3163,3164,3165,3166,3167,3168,3169,3170,3182,3183,3185,3187,3188,3190,3192,3196,3197,3200,3201,3202,3203,3204,3205,3206,3207,3208,3209,3210,3211,3212,3213],"lat":[39.9538,39.9473,39.9522,39.9452,39.9808,39.9558,39.9471,39.9422,39.9632,39.9589,39.9474,39.98,39.9527,39.954,39.9492,39.9539,39.9547,39.9482,39.9372,39.9406,39.9538,39.9393,39.98,39.9453,39.95,39.9332,39.9627,39.9542,39.9478,39.9712,39.9629,39.9685,39.9308,39.9479,39.9501,39.9507,39.9451,39.9534,39.9674,39.9473,39.9323,39.9625,39.9511,39.9767,39.9644,39.9672,39.9624,39.9592,39.9543,39.952,39.9463,39.9384,39.9707,39.9456,39.9355,39.937,39.9617,39.9344,39.9614,39.9551,39.9672,39.9721,39.9535,39.9402,39.9698,39.9884,39.9912,39.9789,39.9343,39.934,39.9278,39.943,39.9676,39.9666,39.9918,39.982,39.9532,39.9537,39.9747,39.9378,39.9726,39.9601,39.9587,39.9667,39.9752,39.9741,39.9536,39.9439,39.9288,39.9499,39.9722,39.9592,39.9402,39.9538,39.9254,39.9255,39.9512,39.9566,39.9549,39.9497,39.9281,39.9582,39.9724,39.9502,39.9513,39.9538,39.9443,39.9508,39.8899,39.9517,39.9572,39.9047,39.9489,39.9621,39.9872,39.9208,39.9758,39.9552,39.9513,39.9408,39.9644,39.954,39.9517,39.9544,39.9505,39.949,39.9849,39.9717,39.9638,39.9389],"lon":[-75.1637,-75.144,-75.2031,-75.1599,-75.1506,-75.1898,-75.1662,-75.1775,-75.1479,-75.1737,-75.1489,-75.1437,-75.1598,-75.1498,-75.1904,-75.169,-75.1832,-75.2091,-75.1612,-75.1496,-75.1948,-75.1572,-75.1552,-75.1797,-75.1567,-75.1625,-75.1942,-75.1614,-75.1941,-75.1597,-75.1661,-75.1355,-75.1747,-75.1624,-75.1447,-75.1492,-75.1425,-75.1543,-75.1751,-75.157,-75.1815,-75.1742,-75.1546,-75.1581,-75.1799,-75.17,-75.1612,-75.1704,-75.1776,-75.1794,-75.1698,-75.1733,-75.1517,-75.1735,-75.1671,-75.1504,-75.1879,-75.1454,-75.1524,-75.2099,-75.1612,-75.1635,-75.1719,-75.1669,-75.1418,-75.187,-75.1797,-75.1334,-75.1604,-75.1509,-75.151,-75.1596,-75.1795,-75.1921,-75.1864,-75.1887,-75.1655,-75.2182,-75.1978,-75.1801,-75.1676,-75.172,-75.2132,-75.208,-75.1867,-75.1802,-75.1395,-75.1674,-75.1702,-75.2029,-75.1299,-75.1582,-75.1544,-75.1741,-75.1595,-75.169,-75.1996,-75.1986,-75.1809,-75.181,-75.1652,-75.1782,-75.1345,-75.1603,-75.1739,-75.1426,-75.1813,-75.1695,-75.1768,-75.1589,-75.1723,-75.1734,-75.1699,-75.1411,-75.1748,-75.1703,-75.1685,-75.1662,-75.1676,-75.1723,-75.1658,-75.1678,-75.1706,-75.192,-75.1932,-75.2128,-75.1567,-75.1706,-75.1816,-75.1666]}
+    var mymap = L.map('mapid',{attributionControl: false, zoomControl: false}).setView([39.94633180116148, -75.17189025878908], 12);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+}).addTo(mymap);
+    var myMarkerArray = [];
+    for(i=0;i<stations.station.length;i++){
+        var myMarker = L.circle([stations.lat[i], stations.lon[i]]).addTo(mymap);
+        myMarkerArray.push(myMarker)
+        var fromTo = {from: [stations.lat[0], stations.lon[0]], 
+                        to:  [stations.lat[i], stations.lon[i]]}
+        makeBikeCurves(fromTo)
+    }
+
+var randomPos = true
+function makeBikeCurves(fromTo) {
+var latlngs = [];
+// var i = 0
+// var latlng1 = [stations.lat[i], stations.lon[i]],
+// 	latlng2 = [stations.lat[i+5], stations.lon[i+5]];
+var latlng1 = [fromTo.from[0], fromTo.from[1]],
+	latlng2 = [fromTo.to[0], fromTo.to[1]];
+
+var offsetX = latlng2[1] - latlng1[1],
+	offsetY = latlng2[0] - latlng1[0];
+
+var r = Math.sqrt( Math.pow(offsetX, 2) + Math.pow(offsetY, 2) ),
+	theta = Math.atan2(offsetY, offsetX);
+
+
+// var thetaOffset = (3.14/10);
+var randomOffset = Math.floor(Math.random() * 7) + 10;
+if (randomPos == true) {randomPos = false} else {randomOffset = randomOffset * -1 ; randomPos = true}
+var thetaOffset = (3.14/randomOffset);
+
+var r2 = (r/2)/(Math.cos(thetaOffset)),
+	theta2 = theta + thetaOffset;
+
+var midpointX = (r2 * Math.cos(theta2)) + latlng1[1],
+	midpointY = (r2 * Math.sin(theta2)) + latlng1[0];
+
+var midpointLatLng = [midpointY, midpointX];
+
+latlngs.push(latlng1, midpointLatLng, latlng2);
+
+var pathOptions = {
+	color: 'rgba(255,0,255,0.5)',
+	weight: 2
+}
+
+if (typeof document.getElementById('mapid').animate === "function") { 
+	var durationBase = 2000;
+   	var duration = Math.sqrt(Math.log(r+50)) * durationBase;
+    //    console.log(duration)
+	// Scales the animation duration so that it's related to the line length
+	// (but such that the longest and shortest lines' durations are not too different).
+   	// You may want to use a different scaling factor.
+  	pathOptions.animate = {
+		duration: duration,
+		// iterations: Infinity,
+		easing: 'ease-in-out'
+		// direction: 'alternate'
+	}
+}
+
+var curvedPath = L.curve(
+	[
+		'M', latlng1,
+		'Q', midpointLatLng,
+			 latlng2
+	], pathOptions).addTo(mymap);}
+    // if you want to remove all the markers
+    //myMarkerArray.forEach(e => e.remove())
+
+
+// from https://stackoverflow.com/questions/9895082/javascript-populate-drop-down-list-with-array
+var select = document.getElementById("selectNumber");
+var select2 = document.getElementById("selectNumber2");
+
+var options = stations.station;
+for(var i = 0; i < options.length; i++) {
+    var opt = options[i];
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+    select.appendChild(el);
+}
+
+for(var i = 0; i < options.length; i++) {
+    var opt = options[i];
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+    select2.appendChild(el);
+}
+
+document.getElementById("selectNumber").addEventListener("change",function() {
+    const fromStation = this.value;
+    console.log("from: " + fromStation)})
+
+    // document.getElementById("selectNumber2").addEventListener("change",function() {
+    // const toStation = this.value;
+    // console.log("to: " + toStation)})
+
+    </script>
+
+</body>
+</html>

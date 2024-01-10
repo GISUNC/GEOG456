@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar</title>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+</head>
+<body>
+
+    <div id="myDiv"></div>
+    <input type="range" min="0" max="322" value="1" class="slider" oninput="mySlice(this.value)">
+
+
+
+    <script src="./data/temp.json"></script>
+    <script>
+        var trace1 = {
+        x: ChapelHill.day,
+        y: ChapelHill.TMAX,
+        mode: 'markers',
+        type: 'bar',
+        marker: {
+            color:ChapelHill.daColor
+        }
+        };
+
+
+        var layout = {
+            xaxis: {
+                fixedrange: true,
+                range: ["2017-12-31", "2018-12-31"]
+            },
+
+            yaxis: {
+                fixedrange: true,
+                range: [-20, 400]
+            }
+        }
+
+       mySlice = function(daValue) {
+           trace1.x = ChapelHill.day.slice(0,daValue)
+           trace1.y = ChapelHill.TMAX.slice(0,daValue)
+           trace1.marker.color = ChapelHill.daColor.slice(0,daValue)
+           makePlot()
+       }
+
+        makePlot = function(){
+            data = [trace1];
+            Plotly.newPlot('myDiv', data, layout);
+        }
+
+      
+        mySlice(1)
+    </script>
+</body>
+</html>
